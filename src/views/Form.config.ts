@@ -10,6 +10,9 @@ const MAX_WORDS_MSG = (maxLength: number) =>
 const NAME_MIN_WORDS = 2
 const NAME_MAX_WORDS = 4
 
+const MIN_AGE_MSG = 'Age must be at least 18'
+const MAX_AGE_MSG = 'Age must be at most 99'
+
 // TASK 1:
 // - Implement additional validations for the age field.
 // - The minimum age should be 18 and the maximum age should be 99.
@@ -33,7 +36,15 @@ export const validationSchema = object().shape({
             'isNumber',
             IS_NUMBER_MSG,
             (value: string) => !isNaN(Number(value)),
-        ),
+        )
+        .test('minAge', MIN_AGE_MSG, (value: string) => {
+            const age = Number(value)
+            return age >= 18
+        })
+        .test('maxAge', MAX_AGE_MSG, (value: string) => {
+            const age = Number(value)
+            return age <= 99
+        }),
     // TASK 3:
     // - Implement a validation rule for the 'interests' field.
     // - The validation should ensure that at least one option is selected.

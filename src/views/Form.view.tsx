@@ -91,12 +91,7 @@ export const FormView = () => {
                     CheckboxGroup's options. This could be detrimental
                     to your final assessment.
                 */}
-                {/* <Controller
-                    render={() => (
-                        <CheckboxGroup
-                        />
-                    )}
-                /> */}
+                <Controller render={() => <CheckboxGroup />} />
                 <Button
                     variant="contained"
                     disabled={!isValid}
