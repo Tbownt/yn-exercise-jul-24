@@ -9,6 +9,8 @@ import { useAnswersStore } from '../state'
 
 import { validationSchema } from './Form.config'
 
+type Interest = { [key: string]: { label: string } }
+
 export const FormView = () => {
     const answers = useAnswersStore(state => state.getAnswers())
 
@@ -30,6 +32,18 @@ export const FormView = () => {
             age: formData.age,
             interests: [],
         })
+    })
+
+    const mappedInterests = answers.interests.map((interest: Interest) => {
+        //Grabs the id from the original answers.interest
+        //the value of id is for example['31235']
+        const id = Object.keys(interest)[0]
+        //that's why I used the first index of it to delete the array of it
+        //Then returns the label of the id that is passed by as index
+        return {
+            id,
+            label: interest[id].label,
+        }
     })
 
     return (
@@ -91,7 +105,20 @@ export const FormView = () => {
                     CheckboxGroup's options. This could be detrimental
                     to your final assessment.
                 */}
-                <Controller render={() => <CheckboxGroup />} />
+                <Controller
+                    name="interests"
+                    control={control}
+                    render={({ field: { onChange } }) => (
+                        <CheckboxGroup
+                            id="Checkbox"
+                            label="Checkbox"
+                            options={mappedInterests}
+                            onChange={onChange}
+                            helperText={errors.interests?.message || ''}
+                            error={Boolean(errors.interests)}
+                        />
+                    )}
+                />
                 <Button
                     variant="contained"
                     disabled={!isValid}
