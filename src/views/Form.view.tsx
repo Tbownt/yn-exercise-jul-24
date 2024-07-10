@@ -26,6 +26,7 @@ export const FormView = () => {
     const updateAnswersMutation = useUpdateAnswers()
 
     const onSubmit = handleSubmit(formData => {
+        console.log(formData)
         updateAnswersMutation.mutate({
             name: formData.name,
             mail: formData.mail,
@@ -38,8 +39,8 @@ export const FormView = () => {
         //Grabs the id from the original answers.interest
         //the value of id is for example['31235']
         const id = Object.keys(interest)[0]
-        //that's why I used the first index of it to delete the array of it
-        //Then returns the label of the id that is passed by as index
+        //then the array is removed using the first index of it
+
         return {
             id,
             label: interest[id].label,
@@ -71,6 +72,7 @@ export const FormView = () => {
                 <Controller
                     name="age"
                     control={control}
+                    defaultValue={answers.age}
                     render={({ field: { onChange, value } }) => (
                         <TextField
                             label="Age"
@@ -108,12 +110,13 @@ export const FormView = () => {
                 <Controller
                     name="interests"
                     control={control}
+                    defaultValue={answers.interests}
                     render={({ field: { onChange } }) => (
                         <CheckboxGroup
-                            id="Checkbox"
-                            label="Checkbox"
+                            id="interests-checkbox-group"
+                            label="Interest"
                             options={mappedInterests}
-                            onChange={onChange}
+                            onChange={() => onChange(mappedInterests)}
                             helperText={errors.interests?.message || ''}
                             error={Boolean(errors.interests)}
                         />
