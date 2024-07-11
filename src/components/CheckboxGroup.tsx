@@ -9,7 +9,7 @@ import {
 } from '@mui/material'
 import React from 'react'
 
-type CustomCheckboxProps = CheckboxProps & {
+export type CustomCheckboxProps = CheckboxProps & {
     id: string
     label?: string
 }
