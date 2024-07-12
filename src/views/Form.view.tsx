@@ -1,6 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Box, Button, TextField } from '@mui/material'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 
 import { useUpdateAnswers } from '../api-hooks/useUpdateAnswers'
@@ -13,7 +13,11 @@ import { validationSchema } from './Form.config'
 
 type InterestType = { [key: string]: { label: string } }
 
-type SubmitInterestsData = { id: string; label: string; checked: boolean }
+export type SubmitInterestsData = {
+    id: string
+    label: string
+    checked: boolean
+}
 
 export const FormView = () => {
     const answers = useAnswersStore(state => state.getAnswers())
@@ -52,18 +56,23 @@ export const FormView = () => {
         })
     })
 
-    const mappedInterests = answers.interests.map((interest: InterestType) => {
-        //Grabs the id from the original answers.interest
-        //the value of id is for example['31235']
-        const id = Object.keys(interest)[0]
-        //then the array is removed using the first index of it
-
-        return {
-            id,
-            label: interest[id].label,
-            checked: false,
-        }
-    })
+    const mappedInterests = useMemo(
+        () =>
+            //To obtain our array through CheckboxGroup,
+            //we must transform the data provided to us.
+            //To do so, we will use a mapping of the global state data and
+            // add a memoso that when there is a change in it,
+            // it is updated accordingly.
+            answers.interests.map((interest: InterestType) => {
+                const id = Object.keys(interest)[0]
+                return {
+                    id,
+                    label: interest[id].label,
+                    checked: false,
+                }
+            }),
+        [answers.interests],
+    )
 
     const internalOnChange = (
         interestsProps: CustomCheckboxProps[],
@@ -159,7 +168,7 @@ export const FormView = () => {
                                 internalOnChange(interests, onChange)
                             }
                             helperText={errors.interests?.message || ''}
-                            error={Boolean(errors.interests)}
+                            error={Boolean(errors.interests?.message)}
                         />
                     )}
                 />
