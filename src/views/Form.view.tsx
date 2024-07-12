@@ -59,12 +59,10 @@ export const FormView = () => {
     const mappedInterests = useMemo(
         () =>
             //To obtain our array through CheckboxGroup,
-            //we must transform the data provided to us.
-            //To do so, we will use a mapping of the global state data and
-            // add a memoso that when there is a change in it,
-            // it is updated accordingly.
             answers.interests.map((interest: InterestType) => {
                 const id = Object.keys(interest)[0]
+                //we must transform the data provided to us.
+                //To do so, we will use a mapping of the global state data and
                 return {
                     id,
                     label: interest[id].label,
@@ -72,6 +70,8 @@ export const FormView = () => {
                 }
             }),
         [answers.interests],
+        // add a memo so that when there is a change in it,
+        // it is updated accordingly.
     )
 
     const internalOnChange = (
