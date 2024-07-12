@@ -12,6 +12,7 @@ const NAME_MAX_WORDS = 4
 
 const MIN_AGE_MSG = 'Age must be at least 18'
 const MAX_AGE_MSG = 'Age must be at most 99'
+const INTERESTS_REQUIRED_MSG = 'At least one interest must be selected'
 
 // TASK 1:
 // - Implement additional validations for the age field.
@@ -49,5 +50,11 @@ export const validationSchema = object().shape({
     // - Implement a validation rule for the 'interests' field.
     // - The validation should ensure that at least one option is selected.
     // - If no option is selected, display an error message.
-    interests: mixed().notRequired(),
+    interests: mixed()
+        .required(INTERESTS_REQUIRED_MSG)
+        .test('atLeastOneChecked', INTERESTS_REQUIRED_MSG, value =>
+            Array.isArray(value)
+                ? value.some(interest => interest.checked)
+                : false,
+        ),
 })
