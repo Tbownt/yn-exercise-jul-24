@@ -2,6 +2,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { Box, Button, TextField } from '@mui/material'
 import React, { useMemo } from 'react'
 import { Controller, useForm } from 'react-hook-form'
+import { useNavigate } from 'react-router-dom'
 
 import { useUpdateAnswers } from '../api-hooks/useUpdateAnswers'
 import { CheckboxGroup } from '../components'
@@ -11,7 +12,7 @@ import { useAnswersStore } from '../state'
 
 import { validationSchema } from './Form.config'
 
-type InterestType = { [key: string]: { label: string } }
+type InterestType = { [key: string]: { label: string; isChecked: boolean } }
 
 export type SubmitInterestsData = {
     id: string
@@ -21,6 +22,7 @@ export type SubmitInterestsData = {
 
 export const FormView = () => {
     const answers = useAnswersStore(state => state.getAnswers())
+    const navigate = useNavigate()
 
     const {
         control,
@@ -54,6 +56,7 @@ export const FormView = () => {
             age: formData.age,
             interests: newInterests,
         })
+        navigate('/table')
     })
 
     const mappedInterests = useMemo(
@@ -66,7 +69,7 @@ export const FormView = () => {
                 return {
                     id,
                     label: interest[id].label,
-                    checked: false,
+                    checked: interest[id].isChecked,
                 }
             }),
         [answers.interests],
