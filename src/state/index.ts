@@ -3,11 +3,14 @@ import { devtools } from 'zustand/middleware'
 
 import { DomainAnswers } from '../domain/types'
 
-type AnswersStoreProperties = DomainAnswers
+type AnswersStoreProperties = DomainAnswers & {
+    isLoading: boolean
+}
 
 type AnswersStoreActions = {
     setAnswers: (answers: DomainAnswers) => void
     getAnswers: () => DomainAnswers
+    setIsLoading: (isLoading: boolean) => void
 }
 
 export type AnswersStore = AnswersStoreProperties & AnswersStoreActions
@@ -17,6 +20,7 @@ const initialState: AnswersStoreProperties = {
     mail: '',
     age: '',
     interests: [],
+    isLoading: false,
 }
 
 const createStore: StateCreator<AnswersStore> = (set, get) => ({
@@ -28,6 +32,7 @@ const createStore: StateCreator<AnswersStore> = (set, get) => ({
         mail: get().mail,
         interests: get().interests,
     }),
+    setIsLoading: isLoading => set(state => ({ ...state, isLoading })),
 })
 
 export const useAnswersStore = create(devtools(createStore))
