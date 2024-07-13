@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom'
 import { useUpdateAnswers } from '../api-hooks/useUpdateAnswers'
 import { CheckboxGroup } from '../components'
 import { CustomCheckboxProps } from '../components/CheckboxGroup'
+import { APP_ROUTES } from '../domain/routes'
 import { DomainOption } from '../domain/types'
 import { useAnswersStore } from '../state'
 
@@ -22,7 +23,14 @@ export type SubmitInterestsData = {
 
 export const FormView = () => {
     const answers = useAnswersStore(state => state.getAnswers())
+    const isLoading = useAnswersStore(state => state.isLoading)
     const navigate = useNavigate()
+    const initialState = {
+        age: '',
+        name: '',
+        mail: '',
+        interests: [],
+    }
 
     const {
         control,
@@ -31,6 +39,7 @@ export const FormView = () => {
     } = useForm({
         mode: 'onChange',
         resolver: yupResolver(validationSchema),
+        values: isLoading ? initialState : answers,
     })
 
     const updateAnswersMutation = useUpdateAnswers()
@@ -56,7 +65,7 @@ export const FormView = () => {
             age: formData.age,
             interests: newInterests,
         })
-        navigate('/table')
+        navigate(APP_ROUTES.TABLE)
     })
 
     const mappedInterests = useMemo(
@@ -103,7 +112,14 @@ export const FormView = () => {
             <Box
                 display="flex"
                 gap={4}
-                sx={{ flexDirection: 'column', width: '300px' }}
+                sx={{
+                    flexDirection: 'column',
+                    width: {
+                        xs: '200px',
+                        sm: '300px',
+                        md: '400px',
+                    },
+                }}
             >
                 <Controller
                     name="name"
@@ -166,7 +182,7 @@ export const FormView = () => {
                         <CheckboxGroup
                             id="interests-checkbox-group"
                             label="Interest"
-                            options={mappedInterests}
+                            options={isLoading ? [] : mappedInterests}
                             onChange={interests =>
                                 internalOnChange(interests, onChange)
                             }
